@@ -10,10 +10,13 @@ public class IronManBehaviourScript : MonoBehaviour {
 	private Rigidbody playerRigidBody;
 	private bool isMoving = false;
 	private Animator anim;
+	private int floorMask;
+	private float camRayLength = 100f;
 
 	void Awake () {
 		playerRigidBody = GetComponent<Rigidbody>();
 		anim = GetComponent<Animator>();
+		floorMask = LayerMask.GetMask("Floor");
 	}
 
 	void FixedUpdate(){
@@ -26,6 +29,7 @@ public class IronManBehaviourScript : MonoBehaviour {
 			isMoving = false;
 		}
 		Animating ();
+		Turning ();
 	}
 
 	void Move (float h, float v){
@@ -39,6 +43,19 @@ public class IronManBehaviourScript : MonoBehaviour {
 			anim.SetFloat("speed", 1f); 
 		} else {
 			anim.SetFloat("speed", 0f); 
+		}
+	}
+
+	void Turning (){
+//		Debug.Log("RHoriz: " + Input.GetAxis("RHoriz"));
+//		Debug.Log("RVert: " + Input.GetAxis("RVert"));
+		Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit floorHit;
+		if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask)){
+			Vector3 playerToMouse = floorHit.point - transform.position;
+			playerToMouse.y = 0f;
+			Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
+			playerRigidBody.MoveRotation(newRotation);
 		}
 	}
 }
