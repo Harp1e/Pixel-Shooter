@@ -4,6 +4,8 @@ using System.Collections;
 public class PlayerShoot : MonoBehaviour {
 
 	public Light spotLight;
+	public int damagePoints = 10;
+	public bool isEnabled = true;
 	
 	private RaycastHit shootHit;
 	private Ray shootRay;
@@ -24,7 +26,7 @@ public class PlayerShoot : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetButtonDown("Fire1") && !isShooting){
+		if(Input.GetButtonDown("Fire1") && !isShooting && isEnabled){
 			Shoot();
 			Invoke("StopShooting", 0.15f);
 		} 
@@ -39,6 +41,10 @@ public class PlayerShoot : MonoBehaviour {
 		shootRay.direction = transform.forward;
 		if (Physics.Raycast(shootRay, out shootHit, 100f, shootableMask)){
 			laserLine.SetPosition (1, shootHit.point);
+			EnemyHealth enemyHealth = shootHit.collider.GetComponent<EnemyHealth>();
+			if(enemyHealth != null){
+				enemyHealth.TakeDamage(damagePoints, shootHit.point);
+			}
 		} else {
 			laserLine.SetPosition (1, laserBeamEnd.transform.position);
 		}
@@ -48,5 +54,9 @@ public class PlayerShoot : MonoBehaviour {
 		laserLine.enabled = false;
 		isShooting = false;
 		spotLight.enabled = false;
+	}
+
+	public void DisableShooting(){
+		isEnabled = false;
 	}
 }

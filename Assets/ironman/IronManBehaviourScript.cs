@@ -5,6 +5,7 @@ using UnitySampleAssets.CrossPlatformInput;
 public class IronManBehaviourScript : MonoBehaviour {
 
 	public float speed;
+	public bool isEnabled = true;
 
 	private Vector3 movement;
 	private Rigidbody playerRigidBody;
@@ -20,6 +21,9 @@ public class IronManBehaviourScript : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
+		if(!isEnabled){
+			return;
+		}
 		float h = CrossPlatformInputManager.GetAxisRaw("Horizontal");
 		float v = CrossPlatformInputManager.GetAxisRaw("Vertical");
 		Move (h, v);
@@ -57,5 +61,9 @@ public class IronManBehaviourScript : MonoBehaviour {
 			Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
 			playerRigidBody.MoveRotation(newRotation);
 		}
+	}
+
+	public void DisableMovement(){
+		isEnabled = false;
 	}
 }
