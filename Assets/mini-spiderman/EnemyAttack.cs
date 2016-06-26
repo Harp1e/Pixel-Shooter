@@ -32,7 +32,7 @@ public class EnemyAttack : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if( ! isEnabled){
+		if(!isEnabled){
 			return;
 		}
 		timer += Time.deltaTime;
