@@ -5,6 +5,7 @@ public class EnemyHealth : MonoBehaviour {
 
 	public int startingHealth = 100;
 	public int currentHealth = 100;
+	public int pointValueOnKill = 10;
 
 	private bool isDead = false;
 	private Animator anim;
@@ -33,14 +34,18 @@ public class EnemyHealth : MonoBehaviour {
 		hitParticles.transform.position = hitPoint;
 		hitParticles.Play();
 		if (currentHealth <= 0){
+			GameObject player = GameObject.FindGameObjectWithTag("Player");
+			IronManBehaviourScript playerScript = player.GetComponent<IronManBehaviourScript>();
+			playerScript.score += pointValueOnKill; 
 			Death();
 		}
 	}
 
-	void Death () {
+	public void Death () {
 		isDead = true;
 		anim.SetTrigger ("death");
 //		navMeshAgent.enabled = false;
+		currentHealth = 0;
 		navMeshAgent.speed = 0;
 		Destroy(gameObject, 3.0f);
 	}

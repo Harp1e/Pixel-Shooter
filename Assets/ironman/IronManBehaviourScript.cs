@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnitySampleAssets.CrossPlatformInput;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class IronManBehaviourScript : MonoBehaviour {
 
 	public float speed;
 	public bool isEnabled = true;
+	public GameObject gameOverPanel;
+	public Text scoreText;
+	public int score;
 
 	private Vector3 movement;
 	private Rigidbody playerRigidBody;
@@ -13,6 +18,7 @@ public class IronManBehaviourScript : MonoBehaviour {
 	private Animator anim;
 	private int floorMask;
 	private float camRayLength = 100f;
+	private PlayerHealth playerHealth;
 
 	void Awake () {
 		playerRigidBody = GetComponent<Rigidbody>();
@@ -20,8 +26,24 @@ public class IronManBehaviourScript : MonoBehaviour {
 		floorMask = LayerMask.GetMask("Floor");
 	}
 
+	void Start (){
+		gameOverPanel.SetActive(false);
+		GameObject player = GameObject.FindGameObjectWithTag("Player");
+		playerHealth = player.GetComponent<PlayerHealth>();
+		score = 0;
+		scoreText.text = "Score: 0";
+	}
+
+	void Update (){
+		if (playerHealth.currentHealth <= 0){
+			isEnabled = false;
+			DisplayGameOver();
+		}
+		scoreText.text = "Score: " + score.ToString();
+	}
+
 	void FixedUpdate(){
-		if(!isEnabled){
+		if(isEnabled ==false){
 			return;
 		}
 		float h = CrossPlatformInputManager.GetAxisRaw("Horizontal");
@@ -65,5 +87,13 @@ public class IronManBehaviourScript : MonoBehaviour {
 
 	public void DisableMovement(){
 		isEnabled = false;
+	}
+
+	public void RestartGame (){
+		SceneManager.LoadScene("scene-ironman");
+	}
+
+	void DisplayGameOver(){
+		gameOverPanel.SetActive (true);
 	}
 }

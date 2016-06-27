@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour {
 	public int startingHealth = 100;
 	public int currentHealth = 100;
 	public Text healthText;
+	public Slider healthSlider;
 
 	private bool isDead = false;
 	private Animator anim;
@@ -15,13 +16,13 @@ public class PlayerHealth : MonoBehaviour {
 	void Start () {
 		currentHealth = startingHealth;
 		anim = GetComponent<Animator>();
-
-
+		healthSlider.value = startingHealth;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		healthText.text = "Health: " + currentHealth.ToString();
+		healthSlider.value = currentHealth;
 	}
 
 	public void TakeDamage(int amount){
@@ -40,6 +41,7 @@ public class PlayerHealth : MonoBehaviour {
 		}
 		isDead = true;
 		anim.SetTrigger ("death");
+		currentHealth = 0;
 //		Destroy(gameObject, 3.0f);
 	}
 }

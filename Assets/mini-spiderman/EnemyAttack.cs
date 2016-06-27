@@ -7,12 +7,12 @@ public class EnemyAttack : MonoBehaviour {
 	public float timeBetweenAttacks = 0.5f;
 
 	private Animator anim;
+	private Animator playerAnim;
 	private GameObject player;
 	private bool playerInRange = false;
 	private float timer;
 	private EnemyHealth enemyHealth;
 	private PlayerHealth playerHealth;
-	private Animator playerAnim;
 	private bool isEnabled = true;
 	private NavMeshAgent agent;
 	private PlayerShoot playerShoot;
@@ -32,7 +32,7 @@ public class EnemyAttack : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(!isEnabled){
+		if(isEnabled == false){
 			return;
 		}
 		timer += Time.deltaTime;
