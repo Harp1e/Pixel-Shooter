@@ -11,6 +11,8 @@ public class IronManBehaviourScript : MonoBehaviour {
 	public GameObject gameOverPanel;
 	public Text scoreText;
 	public int score;
+	public bool gameOver = false;
+	public AudioClip gameOverClip;
 
 	private Vector3 movement;
 	private Rigidbody playerRigidBody;
@@ -19,6 +21,7 @@ public class IronManBehaviourScript : MonoBehaviour {
 	private int floorMask;
 	private float camRayLength = 100f;
 	private PlayerHealth playerHealth;
+	private AudioSource audio;
 
 	void Awake () {
 		playerRigidBody = GetComponent<Rigidbody>();
@@ -32,18 +35,24 @@ public class IronManBehaviourScript : MonoBehaviour {
 		playerHealth = player.GetComponent<PlayerHealth>();
 		score = 0;
 		scoreText.text = "Score: 0";
+		gameOver = false;
+		audio = GetComponent<AudioSource>();
 	}
 
 	void Update (){
+//		Debug.Log("Ironman gameOver: " + gameOver);
+
 		if (playerHealth.currentHealth <= 0){
 			isEnabled = false;
-			DisplayGameOver();
+			if (gameOver == false){
+				Invoke("DisplayGameOver", 1.0f);
+			}
 		}
 		scoreText.text = "Score: " + score.ToString();
 	}
 
 	void FixedUpdate(){
-		if(isEnabled ==false){
+		if(isEnabled == false){
 			return;
 		}
 		float h = CrossPlatformInputManager.GetAxisRaw("Horizontal");
@@ -73,8 +82,6 @@ public class IronManBehaviourScript : MonoBehaviour {
 	}
 
 	void Turning (){
-//		Debug.Log("RHoriz: " + Input.GetAxis("RHoriz"));
-//		Debug.Log("RVert: " + Input.GetAxis("RVert"));
 		Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit floorHit;
 		if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask)){
@@ -94,6 +101,9 @@ public class IronManBehaviourScript : MonoBehaviour {
 	}
 
 	void DisplayGameOver(){
+		gameOver = true;
 		gameOverPanel.SetActive (true);
+		audio.PlayOneShot(gameOverClip, 0.5f);
+
 	}
 }
